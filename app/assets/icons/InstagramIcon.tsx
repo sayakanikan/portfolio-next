@@ -1,4 +1,5 @@
 import React from "react";
+import { IconsProp } from "./IconsProp";
 
 const InstagramIcon = ({ className }: IconsProp) => {
   return (

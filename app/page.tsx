@@ -1,11 +1,6 @@
 "use client";
 
 import JumbotronImage from "./assets/images/man3.png";
-import EventeerCard from "./assets/images/eventeer.jpg";
-import AmoebaBrandCard from "./assets/images/amoeba2.png";
-import AherCard from "./assets/images/aher.png";
-import MyPertaminaCard from "./assets/images/my_ptm.jpg";
-import PtkdnCard from "./assets/images/ptkdn.png";
 import Image from "next/image";
 import GithubIcon from "./assets/icons/GithubIcon";
 import LinkedinIcon from "./assets/icons/LinkedinIcon";
@@ -194,23 +189,23 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-16 text-center text-slate-900">Artikel Terbaru</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-            {article && article.length > 0
-              ? article.map((item) => (
-                  <div key={item.id} className="bg-white shadow-lg border border-slate-100 rounded-lg group transform transition duration-300 md:scale-105 hover:scale-105 md:hover:scale-110">
-                    <img src={item.image_url} alt="Image Content" className="rounded-t-lg mb-4 w-full h-52 object-cover transition duration-300" />
-                    <div className="px-5 pb-6">
-                      <h3 className="font-semibold text-xl">{item.title}</h3>
-                      <p className="font-medium text-sm text-indigo-500 mt-1 mb-2">2 June 2025</p>
-                      <p className="font-medium text-sm text-slate-700 mb-3">{item.description}</p>
-                      <Link href={`/article/${item.id}`} className="text-md font-medium text-indigo-500">
-                        Baca Selengkapnya
-                      </Link>
-                    </div>
+            {article && article.length > 0 ? (
+              article.map((item) => (
+                <div key={item.id} className="bg-white shadow-lg border border-slate-100 rounded-lg group transform transition duration-300 md:scale-105 hover:scale-105 md:hover:scale-110">
+                  <img src={item.image_url} alt="Image Content" className="rounded-t-lg mb-4 w-full h-52 object-cover transition duration-300" />
+                  <div className="px-5 pb-6">
+                    <h3 className="font-semibold text-xl">{item.title}</h3>
+                    <p className="font-medium text-sm text-indigo-500 mt-1 mb-2">2 June 2025</p>
+                    <p className="font-medium text-sm text-slate-700 mb-3">{item.description}</p>
+                    <Link href={`/article/${item.id}`} className="text-md font-medium text-indigo-500">
+                      Baca Selengkapnya
+                    </Link>
                   </div>
-                ))
-              : (
-                <p className="text-center">"No Article."</p>
-              )}
+                </div>
+              ))
+            ) : (
+              <p className="text-center">"No Article."</p>
+            )}
           </div>
         </div>
       </section>
