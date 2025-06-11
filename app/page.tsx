@@ -192,10 +192,10 @@ export default function Home() {
             {article && article.length > 0 ? (
               article.map((item) => (
                 <div key={item.id} className="bg-white shadow-lg border border-slate-100 rounded-lg group transform transition duration-300 md:scale-105 hover:scale-105 md:hover:scale-110">
-                  <Image src={item.image_url} alt="Image Content" className="rounded-t-lg mb-4 w-full h-52 object-cover transition duration-300" />
+                  <Image src={item.image_url} alt="Image Content" className="rounded-t-lg mb-4 w-full h-52 object-cover transition duration-300" width={300} height={300}/>
                   <div className="px-5 pb-6">
                     <h3 className="font-semibold text-xl">{item.title}</h3>
-                    <p className="font-medium text-sm text-indigo-500 mt-1 mb-2">2 June 2025</p>
+                    <p className="font-medium text-sm text-indigo-500 mt-1 mb-2">{new Date(item.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                     <p className="font-medium text-sm text-slate-700 mb-3">{item.description}</p>
                     <Link href={`/article/${item.id}`} className="text-md font-medium text-indigo-500">
                       Baca Selengkapnya

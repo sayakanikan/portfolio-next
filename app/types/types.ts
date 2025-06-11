@@ -22,4 +22,5 @@ export type Article = {
   image_url: string;
   description: string;
   content: string;
+  created_at: Date;
 }
