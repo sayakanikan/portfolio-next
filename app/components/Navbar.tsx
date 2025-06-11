@@ -18,11 +18,11 @@ export default function Navbar() {
   return (
     <nav className={`sticky top-0 z-50 transition-all duration-300 py-3 ${scrolled ? "bg-white text-gray-900 shadow-md" : "bg-transparent text-gray-900"}`}>
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-5 md:mx-7 lg:mx-10 xl:mx-auto p-4">
-        <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
+        <Link href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
           <span className="self-center text-4xl font-semibold whitespace-nowrap">
             Portfo<span className={`transition-all duration-300 ${scrolled ? `text-gray-900` : 'text-indigo-500'}`}>lio</span>
           </span>
-        </a>
+        </Link>
         <button
           data-collapse-toggle="navbar-default"
           type="button"

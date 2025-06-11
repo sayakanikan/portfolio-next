@@ -143,7 +143,7 @@ export default function Home() {
               <h3 className="text-2xl font-semibold mb-8 text-indigo-600">Pengalaman</h3>
               <ol className="relative flex flex-col gap-10 border-s border-indigo-500">
                 {experience?.map((item) => (
-                  <li className="ms-4">
+                  <li key={item.id} className="ms-4">
                     <div className="absolute w-4 h-4 bg-indigo-500 rounded-full mt-1.5 -start-2 border border-indigo-500"></div>
                     <div className="bg-white border border-slate-200 px-5 py-4 shadow-md rounded-xl">
                       <time className="block mb-1 text-sm font-medium text-gray-400">{item.date_start_end}</time>
@@ -166,8 +166,8 @@ export default function Home() {
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold mb-16 text-center text-slate-900">Featured Project</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {project.map((item, index) => (
-                <div key={index} className={`col-span-3 md:col-span-${item.column_size}`}>
+              {project.map((item) => (
+                <div key={item.id} className={`col-span-3 md:col-span-${item.column_size}`}>
                   <Link href={`/project/${item.name}`}>
                     <div className="h-64 relative group overflow-hidden rounded-lg border border-slate-200">
                       <Image src={item.image_url} alt="Gallery" fill className="object-cover transition-transform duration-300 group-hover:scale-105" />
@@ -192,7 +192,7 @@ export default function Home() {
             {article && article.length > 0 ? (
               article.map((item) => (
                 <div key={item.id} className="bg-white shadow-lg border border-slate-100 rounded-lg group transform transition duration-300 md:scale-105 hover:scale-105 md:hover:scale-110">
-                  <img src={item.image_url} alt="Image Content" className="rounded-t-lg mb-4 w-full h-52 object-cover transition duration-300" />
+                  <Image src={item.image_url} alt="Image Content" className="rounded-t-lg mb-4 w-full h-52 object-cover transition duration-300" />
                   <div className="px-5 pb-6">
                     <h3 className="font-semibold text-xl">{item.title}</h3>
                     <p className="font-medium text-sm text-indigo-500 mt-1 mb-2">2 June 2025</p>
@@ -204,7 +204,7 @@ export default function Home() {
                 </div>
               ))
             ) : (
-              <p className="text-center">"No Article."</p>
+              <p className="text-center">No Article.</p>
             )}
           </div>
         </div>
