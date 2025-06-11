@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import JumbotronImage from "./assets/images/man3.png";
 import EventeerCard from "./assets/images/eventeer.jpg";
@@ -13,20 +13,40 @@ import ScrollCountUp from "./components/ScrollUp";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { supabase } from "./lib/supabaseClient";
+import { Article, Experience, Project } from "./types/types";
 
 export default function Home() {
-  const [project, setProject] = useState<any[]>();
+  const [project, setProject] = useState<Project[]>();
+  const [education, setEducation] = useState<Experience[]>();
+  const [experience, setExperience] = useState<Experience[]>();
+  const [article, setArticle] = useState<Article[]>();
 
-  const fetchData = async () => {
-    const { data, error } = await supabase.from('projects').select('*');
+  const fetchProject = async () => {
+    const { data, error } = await supabase.from("projects").select("*").order("created_at", { ascending: false });
     if (!error) setProject(data);
-    console.log("Project data: " + data + error);
-  }
+  };
+
+  const fetchExperience = async () => {
+    const { data, error } = await supabase.from("experiences").select("*").eq("type", "experience");
+    if (!error) setExperience(data);
+  };
+
+  const fetchEducation = async () => {
+    const { data, error } = await supabase.from("experiences").select("*").eq("type", "education");
+    if (!error) setEducation(data);
+  };
+
+  const fetchArticles = async () => {
+    const { data, error } = await supabase.from("articles").select("*").order("created_at", { ascending: false });
+    if (!error) setArticle(data);
+  };
 
   useEffect(() => {
-    fetchData();
-  }, [])
-  
+    fetchProject();
+    fetchExperience();
+    fetchArticles();
+    fetchEducation();
+  }, []);
 
   return (
     <>
@@ -108,22 +128,18 @@ export default function Home() {
             <div>
               <h3 className="text-2xl font-semibold mb-8 text-indigo-600">Pendidikan</h3>
               <ol className="relative flex flex-col gap-10 border-s border-indigo-500">
-                <li className="ms-4">
-                  <div className="absolute w-4 h-4 bg-indigo-500 rounded-full mt-1.5 -start-2 border border-indigo-500"></div>
-                  <div className="bg-white border border-slate-200 px-5 py-4 shadow-md rounded-xl">
-                    <time className="block mb-1 text-sm font-medium text-gray-400">2019 - 2023</time>
-                    <h4 className="text-lg font-semibold">S1 Teknik Informatika - Universitas Dian Nuswantoro</h4>
-                    <p className="text-base text-gray-500 group-hover:text-white">Konsentrasi di bidang rekayasa perangkat lunak dan pengembangan aplikasi web.</p>
-                  </div>
-                </li>
-                {/* <li className="ms-4">
-                  <div className="absolute w-4 h-4 bg-indigo-500 rounded-full mt-1.5 -start-2 border border-indigo-500"></div>
-                  <div className="bg-white border border-slate-200 px-5 py-4 shadow-md rounded-xl">
-                    <time className="block mb-1 text-sm font-medium text-gray-400">2021</time>
-                    <h4 className="text-lg font-semibold">Bootcamp Full-Stack Developer - Digital Talent</h4>
-                    <p className="text-base text-gray-500 group-hover:text-white">Pelatihan intensif membangun aplikasi end-to-end menggunakan JavaScript, React, dan Node.js.</p>
-                  </div>
-                </li> */}
+                {education?.map((item) => (
+                  <li key={item.id} className="ms-4">
+                    <div className="absolute w-4 h-4 bg-indigo-500 rounded-full mt-1.5 -start-2 border border-indigo-500"></div>
+                    <div className="bg-white border border-slate-200 px-5 py-4 shadow-md rounded-xl">
+                      <time className="block mb-1 text-sm font-medium text-gray-400">{item.date_start_end}</time>
+                      <h4 className="text-lg font-semibold">
+                        {item.position_name} - {item.company_name}
+                      </h4>
+                      <p className="text-base text-gray-500 group-hover:text-white">{item.description}</p>
+                    </div>
+                  </li>
+                ))}
               </ol>
             </div>
 
@@ -131,30 +147,18 @@ export default function Home() {
             <div>
               <h3 className="text-2xl font-semibold mb-8 text-indigo-600">Pengalaman</h3>
               <ol className="relative flex flex-col gap-10 border-s border-indigo-500">
-                <li className="ms-4">
-                  <div className="absolute w-4 h-4 bg-indigo-500 rounded-full mt-1.5 -start-2 border border-indigo-500"></div>
-                  <div className="bg-white border border-slate-200 px-5 py-4 shadow-md rounded-xl">
-                    <time className="block mb-1 text-sm font-medium text-gray-400">Feb 2025 - Sekarang</time>
-                    <h4 className="text-lg font-semibold">Software Developer - PT Asta Berkah Autonomous</h4>
-                    <p className="text-base text-gray-500 group-hover:text-white">Membuat dan mengembangkan aplikasi website dari produk perusahaan menggunakan Laravel, dan Next Js / React Js</p>
-                  </div>
-                </li>
-                <li className="ms-4">
-                  <div className="absolute w-4 h-4 bg-indigo-500 rounded-full mt-1.5 -start-2 border border-indigo-500"></div>
-                  <div className="bg-white border border-slate-200 px-5 py-4 shadow-md rounded-xl">
-                    <time className="block mb-1 text-sm font-medium text-gray-400">Mar 2024 - Sekarang</time>
-                    <h4 className="text-lg font-semibold">Freelance Backend Developer - PT Dynamic Talenta Navigator</h4>
-                    <p className="text-base text-gray-500 group-hover:text-white">Mengembangkan berbagai aplikasi backend menggunakan Laravel sesuai dengan task yang diberikan.</p>
-                  </div>
-                </li>
-                <li className="ms-4">
-                  <div className="absolute w-4 h-4 bg-indigo-500 rounded-full mt-1.5 -start-2 border border-indigo-500"></div>
-                  <div className="bg-white border border-slate-200 px-5 py-4 shadow-md rounded-xl">
-                    <time className="block mb-1 text-sm font-medium text-gray-400">Sep 2023 - Jan 2025</time>
-                    <h4 className="text-lg font-semibold">Software Engineer - PT Akhdani Reka Solusi</h4>
-                    <p className="text-base text-gray-500 group-hover:text-white">Mengembangkan project aplikasi website dari klien menggunakan Laravel/Springboot/.Net, dan berpengalaman integrasi service dengan pihak ketiga.</p>
-                  </div>
-                </li>
+                {experience?.map((item) => (
+                  <li className="ms-4">
+                    <div className="absolute w-4 h-4 bg-indigo-500 rounded-full mt-1.5 -start-2 border border-indigo-500"></div>
+                    <div className="bg-white border border-slate-200 px-5 py-4 shadow-md rounded-xl">
+                      <time className="block mb-1 text-sm font-medium text-gray-400">{item.date_start_end}</time>
+                      <h4 className="text-lg font-semibold">
+                        {item.position_name} - {item.company_name}
+                      </h4>
+                      <p className="text-base text-gray-500 group-hover:text-white">{item.description}</p>
+                    </div>
+                  </li>
+                ))}
               </ol>
             </div>
           </div>
@@ -162,111 +166,51 @@ export default function Home() {
       </section>
 
       {/* Project */}
-      <section className="py-24 px-4 w-full">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-16 text-center text-slate-900">Featured Project</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="col-span-3 md:col-span-1">
-              <Link href={"/project/my_ptm"}>
-                <div className="h-64 relative group overflow-hidden rounded-lg border border-slate-200">
-                  <Image src={MyPertaminaCard} alt="Gallery" fill className="object-cover transition-transform duration-300 group-hover:scale-110" />
-                  <div className="absolute inset-0 flex items-end justify-between transition-opacity duration-300 rounded-lg cursor-pointer px-5 pb-4 pointer-events-none">
-                    <p className="text-white text-sm font-light border border-white rounded-full px-3 py-1"></p>
-                    <p className="text-white text-sm font-semibold">2025</p>
-                  </div>
+      {project ? (
+        <section className="py-24 px-4 w-full">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold mb-16 text-center text-slate-900">Featured Project</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {project.map((item, index) => (
+                <div key={index} className={`col-span-3 md:col-span-${item.column_size}`}>
+                  <Link href={`/project/${item.name}`}>
+                    <div className="h-64 relative group overflow-hidden rounded-lg border border-slate-200">
+                      <Image src={item.image_url} alt="Gallery" fill className="object-cover transition-transform duration-300 group-hover:scale-105" />
+                      <div className="absolute inset-0 flex items-end justify-between transition-opacity duration-300 rounded-lg cursor-pointer px-5 pb-4 pointer-events-none">
+                        <p className={`text-sm font-light border rounded-full px-3 py-1 ${item.text_color == "light" ? "text-white border-white" : "text-slate-900 border-slate-900"}`}>{item.name}</p>
+                        <p className={`text-sm font-semibold ${item.text_color == "light" ? "text-white" : "text-slate-900"}`}>{item.project_year}</p>
+                      </div>
+                    </div>
+                  </Link>
                 </div>
-              </Link>
-            </div>
-
-            <div className="col-span-3 md:col-span-2">
-              <Link href={"/project/tkdn"}>
-                <div className="h-64 relative group overflow-hidden rounded-lg border border-slate-200">
-                  <Image src={PtkdnCard} alt="Gallery" className="object-cover transition-transform duration-300 group-hover:scale-105 mx-auto my-18 md:my-4" />
-                  <div className="absolute inset-0 flex items-end justify-between transition-opacity duration-300 rounded-lg cursor-pointer px-5 pb-4 pointer-events-none">
-                    <p className="text-slate-900 text-sm font-light border border-slate-900 rounded-full px-3 py-1">Asta Parking</p>
-                    <p className="text-slate-900 text-sm font-semibold">2025</p>
-                  </div>
-                </div>
-              </Link>
-            </div>
-
-            <div className="col-span-3 md:col-span-2">
-              <Link href={"/project/tkdn"}>
-                <div className="h-64 relative group overflow-hidden rounded-lg border border-slate-200">
-                  <Image src={PtkdnCard} alt="Gallery" className="object-cover transition-transform duration-300 group-hover:scale-105 mx-auto my-18 md:my-4" />
-                  <div className="absolute inset-0 flex items-end justify-between transition-opacity duration-300 rounded-lg cursor-pointer px-5 pb-4 pointer-events-none">
-                    <p className="text-slate-900 text-sm font-light border border-slate-900 rounded-full px-3 py-1">TKDN Management</p>
-                    <p className="text-slate-900 text-sm font-semibold">2025</p>
-                  </div>
-                </div>
-              </Link>
-            </div>
-
-            <div className="col-span-3 md:col-span-1">
-              <Link href={"/project/my_ptm"}>
-                <div className="h-64 relative group overflow-hidden rounded-lg border border-slate-200">
-                  <Image src={MyPertaminaCard} alt="Gallery" fill className="object-cover transition-transform duration-300 group-hover:scale-110" />
-                  <div className="absolute inset-0 flex items-end justify-between transition-opacity duration-300 rounded-lg cursor-pointer px-5 pb-4 pointer-events-none">
-                    <p className="text-white text-sm font-light border border-white rounded-full px-3 py-1">E-Commerce</p>
-                    <p className="text-white text-sm font-semibold">2025</p>
-                  </div>
-                </div>
-              </Link>
-            </div>
-
-            <div className="col-span-3 md:col-span-1">
-              <Link href={"/project/aher"}>
-                <div className="h-64 relative group overflow-hidden rounded-lg border border-slate-200">
-                  <Image src={AherCard} alt="Gallery" fill className="object-contain transition-transform duration-300 group-hover:scale-110" />
-                  <div className="absolute inset-0 flex items-end justify-between transition-opacity duration-300 rounded-lg cursor-pointer px-5 pb-4 pointer-events-none">
-                    <p className="text-white text-sm font-light border border-white rounded-full px-3 py-1">Akhdani Human Resource</p>
-                    <p className="text-white text-sm font-semibold">2024</p>
-                  </div>
-                </div>
-              </Link>
-            </div>
-
-            <div className="col-span-3 md:col-span-1">
-              <Link href={"/project/amoeba"}>
-                <div className="h-64 relative group overflow-hidden rounded-lg border border-slate-200">
-                  <Image src={AmoebaBrandCard} alt="Gallery" fill className="object-cover transition-transform duration-300 group-hover:scale-105" />
-                  <div className="absolute inset-0 flex items-end justify-between transition-opacity duration-300 rounded-lg cursor-pointer px-5 pb-4 pointer-events-none">
-                    <p className="text-slate-900 text-sm font-light border border-slate-900 rounded-full px-3 py-1">Brand Digital Amoeba</p>
-                    <p className="text-slate-900 text-sm font-semibold">2023</p>
-                  </div>
-                </div>
-              </Link>
-            </div>
-
-            <div className="col-span-3 md:col-span-1">
-              <Link href={"/project/eventeer"}>
-                <div className="h-64 relative group overflow-hidden rounded-lg border border-slate-200">
-                  <Image src={EventeerCard} alt="Gallery" fill className="object-cover transition-transform duration-300 group-hover:scale-110" />
-                  <div className="absolute inset-0 flex items-end justify-between transition-opacity duration-300 rounded-lg cursor-pointer px-5 pb-4 pointer-events-none">
-                    <p className="text-white text-sm font-light border border-white rounded-full px-3 py-1">Event Management Platform</p>
-                    <p className="text-white text-sm font-semibold">2023</p>
-                  </div>
-                </div>
-              </Link>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
       {/* Artikel */}
       <section className="py-24 px-4 w-full">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-16 text-center text-slate-900">Artikel Terbaru</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-            <div className="bg-white shadow-lg border border-slate-100 rounded-lg group transform transition duration-300 md:scale-105 hover:scale-105">
-              <img src="https://flowbite.s3.amazonaws.com/docs/gallery/masonry/image-1.jpg" alt="Image Content" className="rounded-t-lg mb-4 w-full h-52 object-cover transition duration-300" />
-              <div className="px-5 pb-6">
-                <h3 className="font-semibold text-xl">Card Title</h3>
-                <p className="font-medium text-sm text-indigo-500 mt-1 mb-2">2 June 2025</p>
-                <p className="font-medium text-sm text-slate-700 mb-3">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Commodi quas odio optio odit, sed unde.</p>
-                <Link href="/article/1" className="text-md font-medium text-indigo-500">Baca Selengkapnya</Link>
-              </div>
-            </div>
+            {article && article.length > 0
+              ? article.map((item) => (
+                  <div key={item.id} className="bg-white shadow-lg border border-slate-100 rounded-lg group transform transition duration-300 md:scale-105 hover:scale-105 md:hover:scale-110">
+                    <img src={item.image_url} alt="Image Content" className="rounded-t-lg mb-4 w-full h-52 object-cover transition duration-300" />
+                    <div className="px-5 pb-6">
+                      <h3 className="font-semibold text-xl">{item.title}</h3>
+                      <p className="font-medium text-sm text-indigo-500 mt-1 mb-2">2 June 2025</p>
+                      <p className="font-medium text-sm text-slate-700 mb-3">{item.description}</p>
+                      <Link href={`/article/${item.id}`} className="text-md font-medium text-indigo-500">
+                        Baca Selengkapnya
+                      </Link>
+                    </div>
+                  </div>
+                ))
+              : (
+                <p className="text-center">"No Article."</p>
+              )}
           </div>
         </div>
       </section>
