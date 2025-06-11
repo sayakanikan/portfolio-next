@@ -1,0 +1,3 @@
+type IconsProp = {
+  className?: string;
+};
