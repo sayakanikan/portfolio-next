@@ -165,9 +165,9 @@ export default function Home() {
         <section className="py-24 px-4 w-full">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold mb-16 text-center text-slate-900">Featured Project</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {project.map((item) => (
-                <div key={item.id} className={`col-span-3 md:col-span-${item.column_size}`}>
+                <div key={item.id} className={`md:col-span-${item.column_size}`}>
                   <Link href={`/project/${item.name}`}>
                     <div className="h-64 relative group overflow-hidden rounded-lg border border-slate-200">
                       <Image src={item.image_url} alt="Gallery" fill className="object-cover transition-transform duration-300 group-hover:scale-105" />
@@ -204,7 +204,7 @@ export default function Home() {
                 </div>
               ))
             ) : (
-              <p className="text-center">No Article.</p>
+              <p className="md:col-span-4 text-center">No Article.</p>
             )}
           </div>
         </div>
