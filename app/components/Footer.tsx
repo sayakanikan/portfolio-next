@@ -18,7 +18,7 @@ export default function Footer() {
                   Portfo<span className="text-indigo-500">lio</span>
                 </span>
               </a>
-              <div className="text-gray-400">Build website with unlimited creativity, and ...</div>
+              <div className="text-gray-400">Membangun website dengan kreatifitas tanpa batas, dan membuat pengalaman menjelajahi website jadi lebih menyenangkan.</div>
               <div className="flex flex-row items-center gap-4">
                 <a href="https://www.linkedin.com/in/irfannsyah" target="_blank">
                   <LinkedinIcon className="text-gray-400 cursor-pointer hover:text-indigo-500 hover:-translate-y-1 transition-all" />

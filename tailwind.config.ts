@@ -14,6 +14,7 @@ export default {
       },
       animation: {
         'blob-move': 'blob-move 20s infinite',
+        'infinite-scroll': 'infinite-scroll 25s linear infinite',
       },
       keyframes: {
         'blob-move': {
@@ -21,6 +22,10 @@ export default {
           '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
           '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
         },
+        'infinite-scroll': {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(-100%)' },
+        }
       },
     },
   },

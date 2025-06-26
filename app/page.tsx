@@ -6,34 +6,63 @@ import GithubIcon from "./assets/icons/GithubIcon";
 import LinkedinIcon from "./assets/icons/LinkedinIcon";
 import ScrollCountUp from "./components/ScrollUp";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "./lib/supabaseClient";
-import { Article, Experience, Project } from "./types/types";
+import { Article, Experience, Project, TechStack } from "./types/types";
+import ScrollToTopButton from "./components/ScrollOnTopButton";
+import FadeInOnScroll from "./components/FadeInOnScroll";
+import Loader from "./components/Loader";
 
 export default function Home() {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [project, setProject] = useState<Project[]>();
   const [education, setEducation] = useState<Experience[]>();
   const [experience, setExperience] = useState<Experience[]>();
   const [article, setArticle] = useState<Article[]>();
+  const [techStack, setTechStack] = useState<TechStack[]>();
+  const [isVisible, setIsVisible] = useState(true);
+  const [isLoadingProject, setIsLoadingProject] = useState<boolean>(false);
+  const [isLoadingEducation, setIsLoadingEducation] = useState<boolean>(false);
+  const [isLoadingExperience, setIsLoadingExperience] = useState<boolean>(false);
+  const [isLoadingArticle, setIsLoadingArticle] = useState<boolean>(false);
+
+  const colSpanMap: { [key: string]: string } = {
+    1: "md:col-span-1",
+    2: "md:col-span-2",
+    3: "md:col-span-3",
+  };
 
   const fetchProject = async () => {
+    setIsLoadingProject(true);
     const { data, error } = await supabase.from("projects").select("*").order("created_at", { ascending: false });
     if (!error) setProject(data);
+    setIsLoadingProject(false);
   };
 
   const fetchExperience = async () => {
+    setIsLoadingExperience(true);
     const { data, error } = await supabase.from("experiences").select("*").eq("type", "experience");
     if (!error) setExperience(data);
+    setIsLoadingExperience(false);
   };
 
   const fetchEducation = async () => {
+    setIsLoadingEducation(true);
     const { data, error } = await supabase.from("experiences").select("*").eq("type", "education");
     if (!error) setEducation(data);
+    setIsLoadingEducation(false);
   };
 
   const fetchArticles = async () => {
+    setIsLoadingArticle(true);
     const { data, error } = await supabase.from("articles").select("*").order("created_at", { ascending: false });
     if (!error) setArticle(data);
+    setIsLoadingArticle(false);
+  };
+
+  const fetchTechStack = async () => {
+    const { data, error } = await supabase.from("tech_stack").select("*").order("sort", { ascending: true });
+    if (!error) setTechStack(data);
   };
 
   useEffect(() => {
@@ -41,7 +70,46 @@ export default function Home() {
     fetchExperience();
     fetchArticles();
     fetchEducation();
+    fetchTechStack();
+
+    const container = containerRef.current;
+    if (!container) return;
+
+    let observer = new IntersectionObserver(
+      (entries) => {
+        setIsVisible(entries[0].isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(container);
+
+    return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || !isVisible) return;
+
+    let animationFrame: number;
+    const scrollSpeed = 1;
+
+    const scroll = () => {
+      if (!container) return;
+
+      container.scrollLeft += scrollSpeed;
+
+      if (container.scrollLeft >= container.scrollWidth / 2) {
+        container.scrollLeft = 0;
+      }
+
+      animationFrame = requestAnimationFrame(scroll); // panggil terus menerus
+    };
+
+    animationFrame = requestAnimationFrame(scroll);
+
+    return () => cancelAnimationFrame(animationFrame);
+  }, [isVisible]);
 
   return (
     <>
@@ -57,7 +125,7 @@ export default function Home() {
           </h2>
 
           {/* Download CV */}
-          <a href="/cv.pdf" className="w-full sm:w-40 text-center bg-transparent border border-indigo-500 text-black font-medium px-6 py-3 rounded-full hover:bg-indigo-500 hover:text-white transition">
+          <a href="/cv.pdf" className="w-full sm:w-40 text-center bg-transparent border border-indigo-500 text-black font-medium px-6 py-3 rounded-full hover:bg-indigo-500 hover:text-white transition-all duration-300 hover:scale-105">
             Download CV
           </a>
 
@@ -116,99 +184,172 @@ export default function Home() {
       {/* Pendidikan & Pengalaman */}
       <section className="py-24 px-4 w-full">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-16 text-center text-slate-900">Pendidikan dan Pengalaman</h2>
+          <FadeInOnScroll>
+            <h2 className="text-3xl md:text-4xl font-bold mb-16 text-center text-slate-900">Pendidikan dan Pengalaman</h2>
+          </FadeInOnScroll>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            {/* Pendidikan */}
-            <div>
-              <h3 className="text-2xl font-semibold mb-8 text-indigo-600">Pendidikan</h3>
-              <ol className="relative flex flex-col gap-10 border-s border-indigo-500">
-                {education?.map((item) => (
-                  <li key={item.id} className="ms-4">
-                    <div className="absolute w-4 h-4 bg-indigo-500 rounded-full mt-1.5 -start-2 border border-indigo-500"></div>
-                    <div className="bg-white border border-slate-200 px-5 py-4 shadow-md rounded-xl">
-                      <time className="block mb-1 text-sm font-medium text-gray-400">{item.date_start_end}</time>
-                      <h4 className="text-lg font-semibold">
-                        {item.position_name} - {item.company_name}
-                      </h4>
-                      <p className="text-base text-gray-500 group-hover:text-white">{item.description}</p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </div>
+          {isLoadingEducation || isLoadingExperience ? (
+            <Loader />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+              {/* Pendidikan */}
+              {education ? (
+                <FadeInOnScroll delay={0.3}>
+                  <div>
+                    <h3 className="text-2xl font-semibold mb-8 text-indigo-600">Pendidikan</h3>
+                    <ol className="relative flex flex-col gap-10 border-s border-indigo-500">
+                      {education.map((item) => (
+                        <li key={item.id} className="ms-4">
+                          <div className="absolute w-4 h-4 bg-indigo-500 rounded-full mt-1.5 -start-2 border border-indigo-500"></div>
+                          <div className="bg-white border border-slate-200 px-5 py-4 shadow-md rounded-xl">
+                            <time className="block mb-1 text-sm font-medium text-gray-400">{item.date_start_end}</time>
+                            <h4 className="text-lg font-semibold">
+                              {item.position_name} - {item.company_name}
+                            </h4>
+                            <p className="text-base text-gray-500 group-hover:text-white">{item.description}</p>
+                          </div>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                </FadeInOnScroll>
+              ) : (
+                "Loading"
+              )}
 
-            {/* PENGALAMAN */}
-            <div>
-              <h3 className="text-2xl font-semibold mb-8 text-indigo-600">Pengalaman</h3>
-              <ol className="relative flex flex-col gap-10 border-s border-indigo-500">
-                {experience?.map((item) => (
-                  <li key={item.id} className="ms-4">
-                    <div className="absolute w-4 h-4 bg-indigo-500 rounded-full mt-1.5 -start-2 border border-indigo-500"></div>
-                    <div className="bg-white border border-slate-200 px-5 py-4 shadow-md rounded-xl">
-                      <time className="block mb-1 text-sm font-medium text-gray-400">{item.date_start_end}</time>
-                      <h4 className="text-lg font-semibold">
-                        {item.position_name} - {item.company_name}
-                      </h4>
-                      <p className="text-base text-gray-500 group-hover:text-white">{item.description}</p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
+              {/* PENGALAMAN */}
+              {experience ? (
+                <FadeInOnScroll delay={0.5}>
+                  <div>
+                    <h3 className="text-2xl font-semibold mb-8 text-indigo-600">Pengalaman</h3>
+                    <ol className="relative flex flex-col gap-10 border-s border-indigo-500">
+                      {experience.map((item) => (
+                        <li key={item.id} className="ms-4">
+                          <div className="absolute w-4 h-4 bg-indigo-500 rounded-full mt-1.5 -start-2 border border-indigo-500"></div>
+                          <div className="bg-white border border-slate-200 px-5 py-4 shadow-md rounded-xl">
+                            <time className="block mb-1 text-sm font-medium text-gray-400">{item.date_start_end}</time>
+                            <h4 className="text-lg font-semibold">
+                              {item.position_name} - {item.company_name}
+                            </h4>
+                            <p className="text-base text-gray-500 group-hover:text-white">{item.description}</p>
+                          </div>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                </FadeInOnScroll>
+              ) : (
+                "Loading"
+              )}
             </div>
-          </div>
+          )}
         </div>
       </section>
 
       {/* Project */}
-      {project ? (
-        <section className="py-24 px-4 w-full">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold mb-16 text-center text-slate-900">Featured Project</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {project.map((item) => (
-                <div key={item.id} className={`md:col-span-${item.column_size}`}>
-                  <Link href={`/project/${item.name}`}>
-                    <div className="h-64 relative group overflow-hidden rounded-lg border border-slate-200">
-                      <Image src={item.image_url} alt="Gallery" fill className="object-cover transition-transform duration-300 group-hover:scale-105" />
-                      <div className="absolute inset-0 flex items-end justify-between transition-opacity duration-300 rounded-lg cursor-pointer px-5 pb-4 pointer-events-none">
-                        <p className={`text-sm font-light border rounded-full px-3 py-1 ${item.text_color == "light" ? "text-white border-white" : "text-slate-900 border-slate-900"}`}>{item.name}</p>
-                        <p className={`text-sm font-semibold ${item.text_color == "light" ? "text-white" : "text-slate-900"}`}>{item.project_year}</p>
-                      </div>
-                    </div>
-                  </Link>
+      {isLoadingProject ? (
+        <Loader />
+      ) : project ? (
+        <FadeInOnScroll>
+          <section className="py-24 px-4 w-full">
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold mb-16 text-center text-slate-900">Featured Project</h2>
+
+              <FadeInOnScroll delay={0.1}>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {project.map((item, i) => {
+                    const spanClass = colSpanMap[item.column_size] ?? "md:col-span-1";
+
+                    return (
+                      <FadeInOnScroll key={item.id} delay={i * 0.1}>
+                        <div className={spanClass}>
+                          <Link href={`/project/${item.name}`}>
+                            <div className="h-64 relative group overflow-hidden rounded-lg border border-slate-200">
+                              <Image src={item.image_url} alt="Gallery" fill className="object-cover transition-transform duration-300 group-hover:scale-105" />
+                              <div className="absolute inset-0 flex items-end justify-between transition-opacity duration-300 rounded-lg cursor-pointer px-5 pb-4 pointer-events-none">
+                                <p className={`text-sm font-light border rounded-full px-3 py-1 ${item.text_color == "light" ? "text-white border-white" : "text-slate-900 border-slate-900"}`}>{item.name}</p>
+                                <p className={`text-sm font-semibold ${item.text_color == "light" ? "text-white" : "text-slate-900"}`}>{item.project_year}</p>
+                              </div>
+                            </div>
+                          </Link>
+                        </div>
+                      </FadeInOnScroll>
+                    );
+                  })}
                 </div>
-              ))}
+              </FadeInOnScroll>
             </div>
-          </div>
-        </section>
+          </section>
+        </FadeInOnScroll>
       ) : null}
 
-      {/* Artikel */}
+      {/* Tech Stack */}
       <section className="py-24 px-4 w-full">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-16 text-center text-slate-900">Artikel Terbaru</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-            {article && article.length > 0 ? (
-              article.map((item) => (
-                <div key={item.id} className="bg-white shadow-lg border border-slate-100 rounded-lg group transform transition duration-300 md:scale-105 hover:scale-105 md:hover:scale-110">
-                  <Image src={item.image_url} alt="Image Content" className="rounded-t-lg mb-4 w-full h-52 object-cover transition duration-300" width={300} height={300}/>
-                  <div className="px-5 pb-6">
-                    <h3 className="font-semibold text-xl">{item.title}</h3>
-                    <p className="font-medium text-sm text-indigo-500 mt-1 mb-2">{new Date(item.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-                    <p className="font-medium text-sm text-slate-700 mb-3">{item.description}</p>
-                    <Link href={`/article/${item.id}`} className="text-md font-medium text-indigo-500">
-                      Baca Selengkapnya
-                    </Link>
-                  </div>
+        <div className="max-w-6xl mx-auto text-center">
+          {techStack && techStack.length > 0 ? (
+            <div className="w-full overflow-hidden">
+              <div ref={containerRef} className="flex no-scrollbar whitespace-nowrap" style={{ scrollBehavior: "auto" }}>
+                <div className="w-full inline-flex flex-nowrap overflow-hidden">
+                  <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 [&_img]:max-w-none animate-infinite-scroll">
+                    {[...techStack, ...techStack].map((item, index) => (
+                      <li key={index}>
+                        <Image src={item.img_url} width={125} height={125} alt={item.name}></Image>
+                      </li>
+                    ))}
+                  </ul>
+                  <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 [&_img]:max-w-none animate-infinite-scroll" aria-hidden="true">
+                    {[...techStack, ...techStack].map((item, index) => (
+                      <li key={index}>
+                        <Image src={item.img_url} width={125} height={125} alt={item.name}></Image>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              ))
-            ) : (
-              <p className="md:col-span-4 text-center">No Article.</p>
-            )}
-          </div>
+              </div>
+            </div>
+          ) : (
+            <p className="text-slate-600">Tidak ada data tech stack.</p>
+          )}
         </div>
       </section>
+
+      {/* Artikel */}
+      <FadeInOnScroll>
+        <section className="py-24 px-4 w-full">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold mb-16 text-center text-slate-900">Artikel Terbaru</h2>
+
+            {isLoadingArticle ? (
+              <Loader />
+            ) : (
+              <FadeInOnScroll delay={0.1}>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+                  {article && article.length > 0 ? (
+                    article.map((item, i) => (
+                      <FadeInOnScroll key={item.id} delay={i * 0.1}>
+                        <div key={item.id} className="bg-white shadow-lg border border-slate-100 rounded-lg group transform transition duration-300 md:scale-105 hover:scale-105 md:hover:scale-110">
+                          <Image src={item.image_url} alt="Image Content" className="rounded-t-lg mb-4 w-full h-52 object-cover transition duration-300" width={300} height={300} />
+                          <div className="px-5 pb-6">
+                            <h3 className="font-semibold text-xl">{item.title}</h3>
+                            <p className="font-medium text-sm text-indigo-500 mt-1 mb-2">{new Date(item.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}</p>
+                            <p className="font-medium text-sm text-slate-700 mb-3">{item.description}</p>
+                            <Link href={`/article/${item.id}`} className="text-md font-medium text-indigo-500">
+                              Baca Selengkapnya
+                            </Link>
+                          </div>
+                        </div>
+                      </FadeInOnScroll>
+                    ))
+                  ) : (
+                    <p className="md:col-span-4 text-center">No Article.</p>
+                  )}
+                </div>
+              </FadeInOnScroll>
+            )}
+          </div>
+        </section>
+      </FadeInOnScroll>
+      <ScrollToTopButton />
     </>
   );
 }

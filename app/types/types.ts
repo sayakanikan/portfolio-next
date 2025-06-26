@@ -3,7 +3,7 @@ export type Project = {
   name: string;
   project_year: string;
   image_url: string;
-  column_size: number;
+  column_size: string;
   text_color: string;
 }
 
@@ -22,5 +22,13 @@ export type Article = {
   image_url: string;
   description: string;
   content: string;
+  created_at: Date;
+}
+
+export type TechStack = {
+  id: number;
+  name: string;
+  img_url: string;
+  sort: string;
   created_at: Date;
 }
