@@ -26,7 +26,7 @@ export default function Home() {
   const [isLoadingExperience, setIsLoadingExperience] = useState<boolean>(false);
   const [isLoadingArticle, setIsLoadingArticle] = useState<boolean>(false);
 
-  const colSpanMap: { [key: string]: string } = {
+  const colSpanMap: { [key: number]: string } = {
     1: "md:col-span-1",
     2: "md:col-span-2",
     3: "md:col-span-3",
@@ -61,7 +61,7 @@ export default function Home() {
   };
 
   const fetchTechStack = async () => {
-    const { data, error } = await supabase.from("tech_stack").select("*").order("sort", { ascending: true });
+    const { data, error } = await supabase.from("tech_stacks").select("*").eq("is_show", true).order("sort", { ascending: true });
     if (!error) setTechStack(data);
   };
 
@@ -214,7 +214,7 @@ export default function Home() {
                   </div>
                 </FadeInOnScroll>
               ) : (
-                "Loading"
+                <p className="text-center">Tidak ada data edukasi.</p>
               )}
 
               {/* PENGALAMAN */}
@@ -239,7 +239,7 @@ export default function Home() {
                   </div>
                 </FadeInOnScroll>
               ) : (
-                "Loading"
+                <p className="text-center">Tidak ada data pengalaman.</p>
               )}
             </div>
           )}
@@ -263,11 +263,11 @@ export default function Home() {
                     return (
                       <FadeInOnScroll key={item.id} delay={i * 0.1}>
                         <div className={spanClass}>
-                          <Link href={`/project/${item.name}`}>
+                          <Link href={`/project/${item.slug}`}>
                             <div className="h-64 relative group overflow-hidden rounded-lg border border-slate-200">
                               <Image src={item.image_url} alt="Gallery" fill className="object-cover transition-transform duration-300 group-hover:scale-105" />
                               <div className="absolute inset-0 flex items-end justify-between transition-opacity duration-300 rounded-lg cursor-pointer px-5 pb-4 pointer-events-none">
-                                <p className={`text-sm font-light border rounded-full px-3 py-1 ${item.text_color == "light" ? "text-white border-white" : "text-slate-900 border-slate-900"}`}>{item.name}</p>
+                                <p className={`text-sm font-light border rounded-full px-3 py-1 ${item.text_color == "light" ? "text-white border-white" : "text-slate-900 border-slate-900"}`}>{item.type}</p>
                                 <p className={`text-sm font-semibold ${item.text_color == "light" ? "text-white" : "text-slate-900"}`}>{item.project_year}</p>
                               </div>
                             </div>
@@ -281,7 +281,9 @@ export default function Home() {
             </div>
           </section>
         </FadeInOnScroll>
-      ) : null}
+      ) : (
+        <p className="text-center">Tidak ada data projek.</p>
+      )}
 
       {/* Tech Stack */}
       <section className="py-24 px-4 w-full">
@@ -341,7 +343,7 @@ export default function Home() {
                       </FadeInOnScroll>
                     ))
                   ) : (
-                    <p className="md:col-span-4 text-center">No Article.</p>
+                    <p className="md:col-span-4 text-center">Tidak ada Artikel.</p>
                   )}
                 </div>
               </FadeInOnScroll>

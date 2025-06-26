@@ -85,7 +85,7 @@ export default function Footer() {
         <hr className="my-6 border-gray-300 sm:mx-auto lg:my-8" />
         <div className="flex items-center justify-between">
           <span className="text-sm text-gray-500 mx-auto">
-            © 2025
+            © {new Date().getFullYear()}
             <a href="https://instagram.com/irfansy_ah" target="_blank" className="hover:underline hover:text-indigo-500 ms-1">
               Irfansyah
             </a>

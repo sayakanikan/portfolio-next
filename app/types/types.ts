@@ -1,9 +1,12 @@
 export type Project = {
   id: number;
   name: string;
+  slug: string;
+  type: string;
   project_year: string;
   image_url: string;
-  column_size: string;
+  tech_stack_ids: string[];
+  column_size: number;
   text_color: string;
 }
 
@@ -29,6 +32,7 @@ export type TechStack = {
   id: number;
   name: string;
   img_url: string;
+  is_show: boolean;
   sort: string;
   created_at: Date;
 }
