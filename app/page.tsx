@@ -113,6 +113,9 @@ export default function Home() {
 
   return (
     <>
+      {/* Blob */}
+      <div className="absolute top-[1400px] -left-52 xl:left-52 w-[800px] xl:w-[1000px] h-[800px] xl:h-[1000px] bg-[linear-gradient(to_bottom_right,_#6B21A8,_#EC4899,_#6366F1,_#38BDF8,_#22D3EE)] opacity-30 blur-3xl rounded-full pointer-events-none z-0 animate-[blob-move_10s_infinite]" />
+
       {/* Beranda */}
       <section className="mx-auto flex flex-col lg:flex-row items-center justify-between min-h-[calc(100vh-6rem)]">
         <div className="text-center lg:text-left flex flex-col items-center lg:items-start mt-10 lg:mt-0 lg:ms-10 xl:ms-0">
@@ -125,8 +128,8 @@ export default function Home() {
           </h2>
 
           {/* Download CV */}
-          <a href="/cv.pdf" className="w-full sm:w-40 text-center bg-transparent border border-indigo-500 text-black font-medium px-6 py-3 rounded-full hover:bg-indigo-500 hover:text-white transition-all duration-300 hover:scale-105">
-            Download CV
+          <a href="https://dkscluxzlfvwhvgacxql.supabase.co/storage/v1/object/public/portfolio//Irfansyah-resume_compressed.pdf" className="w-full sm:w-40 text-center bg-transparent border border-indigo-500 text-black font-medium px-6 py-3 rounded-full hover:bg-indigo-500 hover:text-white transition-all duration-300 hover:scale-105">
+            Get My CV
           </a>
 
           {/* Sosial Media */}

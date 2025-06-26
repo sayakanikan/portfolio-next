@@ -1,9 +1,11 @@
 "use client";
 
 import Loader from "@/app/components/Loader";
+import ScrollToTopButton from "@/app/components/ScrollOnTopButton";
 import { supabase } from "@/app/lib/supabaseClient";
 import { Project, TechStack } from "@/app/types/types";
 import Image from "next/image";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -19,11 +21,8 @@ const ProjectDetail = () => {
     if (!error) setProject(data);
 
     if (data?.tech_stack_ids?.length > 0) {
-      const { data: techStacks, error: techError } = await supabase
-        .from("tech_stacks")
-        .select("*")
-        .in("id", data.tech_stack_ids);
-  
+      const { data: techStacks, error: techError } = await supabase.from("tech_stacks").select("*").in("id", data.tech_stack_ids);
+
       if (!techError) setProjectStacks(techStacks);
     }
 
@@ -35,35 +34,56 @@ const ProjectDetail = () => {
   }, []);
 
   return (
-    <section className="min-h-[calc(100vh-6rem)]">
+    <section className="min-h-[calc(100vh-6rem)] pt-10">
       {isLoading ? (
         <Loader />
       ) : project ? (
         <div key={project.id} className="grid grid-cols-1 md:grid-cols-3 md:gap-5">
           <div className="md:col-span-1">
-            <Image src={project.image_url} width={500} height={300} alt={project.name} className="object-cover w-full h-52"/>
-            <h4 className="font-semibold mt-4 mb-1 text-2xl">Detail Project</h4>
-            <p>Nama: {project.name}</p>
-            <p>Tahun Pengerjaan: {project.project_year}</p>
-            <p>Stack yang digunakan:</p>
-            <br />
-            {projectStacks ? (
-              <div className="flex flex-row gap-5">
-                {projectStacks.map((item) => (
-                  <Image key={item.id} src={item.img_url} alt={item.name} width={50} height={50} className="w-13 h-13 object-fit" />
-                ))}
+            <Image src={project.image_url} width={500} height={300} alt={project.name} className="object-cover w-full h-52 transition-transform duration-300 group-hover:scale-105 rounded-xl shadow-lg" />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 md:gap-3 mt-5">
+              <div className="flex flex-col">
+                <p className="text-slate-500 text-lg font-extralight">Nama </p>
+                <p className="font-semibold text-lg">{project.name}</p>
               </div>
-            ) : (
-              <p>Tidak ada stack.</p>
-            )}
+              <div className="flex flex-col">
+                <p className="text-slate-500 text-lg font-extralight">Tahun Pengerjaan</p>
+                <p className="font-semibold text-lg">{project.project_year}</p>
+              </div>
+              <div className="col-span-2 flex flex-col">
+                <p className="text-slate-500 text-lg font-extralight">Klien</p>
+                <p className="font-semibold text-lg">{project.client}</p>
+              </div>
+              <div className="col-span-2 flex flex-col">
+                {projectStacks ? (
+                  <div className="flex flex-row gap-3">
+                    {projectStacks.map((item) => (
+                      <Image key={item.id} src={item.img_url} alt={item.name} width={60} height={50} className="h-13 object-contain" />
+                    ))}
+                  </div>
+                ) : (
+                  <p>Tidak ada stack.</p>
+                )}
+              </div>
+            </div>
+            <div className="mt-48">
+              <Link href="/" className="bg-none border border-indigo-500 hover:bg-indigo-500 hover:text-white px-3.5 py-1.5 rounded-full">
+                Kembali
+              </Link>
+            </div>
           </div>
-          <div className="md:col-span-2">
-            <h3 className="text-5xl font-semibold">Project Breakdown</h3>
+          <div className="md:col-span-2 px-5">
+            <h3 className="text-4xl font-semibold">Project Overview</h3>
+            <div className="mt-4 prose" dangerouslySetInnerHTML={{ __html: project.description }} ></div>
+            
           </div>
         </div>
       ) : (
-        <p className="text-center">Tidak ada detail.</p>
+        <Loader />
       )}
+
+      <ScrollToTopButton />
     </section>
   );
 };

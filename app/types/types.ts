@@ -4,6 +4,8 @@ export type Project = {
   slug: string;
   type: string;
   project_year: string;
+  client: string;
+  description: string;
   image_url: string;
   tech_stack_ids: string[];
   column_size: number;
