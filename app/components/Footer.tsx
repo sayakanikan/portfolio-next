@@ -8,13 +8,13 @@ import InstagramIcon from "../assets/icons/InstagramIcon";
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-none">
-      <div className="mx-auto w-full max-w-screen-xl px-4 py-6 lg:py-10">
+    <footer className="w-full bg-slate-900">
+      <div className="mx-auto w-full max-w-screen-xl py-6 lg:py-10 ">
         <div className="md:flex md:flex-row">
           <div className="md:flex-1 grid grid-cols-1 mx-4 gap-8 sm:gap-6 sm:grid-cols-3">
             <div className="flex flex-col gap-5">
               <a href="#" className="flex items-center">
-                <span className="self-center text-3xl font-semibold whitespace-nowrap text-slate-800">
+                <span className="self-center text-3xl font-semibold whitespace-nowrap text-white">
                   Portfo<span className="text-indigo-500">lio</span>
                 </span>
               </a>
@@ -38,8 +38,8 @@ export default function Footer() {
               </div>
             </div>
             <div>
-              <h2 className="mb-4 text-lg font-semibold text-black">Berkenalan dengan saya</h2>
-              <ul className="text-gray-500 font-medium">
+              <h2 className="mb-4 text-lg font-semibold text-white">Berkenalan dengan saya</h2>
+              <ul className="text-gray-400 font-medium">
                 <li className="mb-2 flex flex-row gap-2 items-center">
                   <EmailIcon className="w-7 h-7 text-indigo-500" />
                   <p className="text-md">irfansyahavatar1@gmail.com</p>
@@ -51,8 +51,8 @@ export default function Footer() {
               </ul>
             </div>
             <div>
-              <h2 className="mb-4  font-semibold text-black">Website ini dibangun dengan</h2>
-              <ul className="text-gray-500 font-medium">
+              <h2 className="mb-4  font-semibold text-white">Website ini dibangun dengan</h2>
+              <ul className="text-gray-400 font-medium">
                 <li className="mb-1">
                   <a href="https://nextjs.org/" className="hover:text-indigo-500">
                     Next JS
@@ -82,7 +82,7 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <hr className="my-6 border-gray-300 sm:mx-auto lg:my-8" />
+        <hr className="my-6 border-gray-500 sm:mx-auto lg:my-8" />
         <div className="flex items-center justify-between">
           <span className="text-sm text-gray-500 mx-auto">
             © {new Date().getFullYear()}

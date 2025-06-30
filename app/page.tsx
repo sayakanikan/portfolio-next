@@ -127,10 +127,22 @@ export default function Home() {
             Saya seorang <span className="text-indigo-500">Software Engineer</span>
           </h2>
 
-          {/* Download CV */}
-          <a href="https://dkscluxzlfvwhvgacxql.supabase.co/storage/v1/object/public/portfolio//Irfansyah-resume_compressed.pdf" className="w-full sm:w-40 text-center bg-transparent border border-indigo-500 text-black font-medium px-6 py-3 rounded-full hover:bg-indigo-500 hover:text-white transition-all duration-300 hover:scale-105">
-            Get My CV
-          </a>
+          <div className="flex flex-row gap-3">
+            <a
+              href="https://wa.me/6282137803650"
+              target="_blank"
+              className="w-full sm:w-40 text-center bg-indigo-500 border border-indigo-500 text-white font-medium px-6 py-2.5 rounded-full hover:bg-indigo-500/90 transition-all duration-300 hover:scale-105"
+            >
+              Reach Out
+            </a>
+            <a
+              href="https://dkscluxzlfvwhvgacxql.supabase.co/storage/v1/object/public/portfolio//Irfansyah-resume_compressed.pdf"
+              target="_blank"
+              className="w-full sm:w-40 text-center bg-transparent border border-indigo-500 text-black font-medium px-6 py-2.5 rounded-full hover:bg-transparent/5  transition-all duration-300 hover:scale-105"
+            >
+              Lihat Resume
+            </a>
+          </div>
 
           {/* Sosial Media */}
           <div className="mt-10 sm:mt-16 flex gap-4 justify-center lg:justify-start">
@@ -289,8 +301,8 @@ export default function Home() {
       )}
 
       {/* Tech Stack */}
-      <section className="py-24 px-4 w-full">
-        <div className="max-w-6xl mx-auto text-center">
+      <section className="py-24  md:-ms-24 w-screen">
+        <div className="w-full mx-auto text-center">
           {techStack && techStack.length > 0 ? (
             <div className="w-full overflow-hidden">
               <div ref={containerRef} className="flex no-scrollbar whitespace-nowrap" style={{ scrollBehavior: "auto" }}>
@@ -312,9 +324,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-          ) : (
-            <p className="text-slate-600">Tidak ada data tech stack.</p>
-          )}
+          ) : null}
         </div>
       </section>
 

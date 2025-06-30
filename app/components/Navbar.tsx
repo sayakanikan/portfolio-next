@@ -43,17 +43,17 @@ export default function Navbar() {
               </Link>
             </li>
             <li>
-              <Link href="/" className={`font-medium transition-all duration-300 block py-2 px-3 text-gray-900 md:hover:text-indigo-500 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 `}>
+              <Link href="/experiences" className={`font-medium transition-all duration-300 block py-2 px-3 text-gray-900 md:hover:text-indigo-500 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 `}>
                 Pengalaman
               </Link>
             </li>
             <li>
-              <Link href="/" className={`font-medium transition-all duration-300 block py-2 px-3 text-gray-900 md:hover:text-indigo-500 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 `}>
+              <Link href="/articles" className={`font-medium transition-all duration-300 block py-2 px-3 text-gray-900 md:hover:text-indigo-500 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 `}>
                 Artikel
               </Link>
             </li>
             <li>
-              <Link href="/" className={`font-medium transition-all duration-300 block py-2 px-3 text-gray-900 md:hover:text-indigo-500 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 `}>
+              <Link href="/ai" className={`font-medium transition-all duration-300 block py-2 px-3 text-gray-900 md:hover:text-indigo-500 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 `}>
                 Tanya AI
               </Link>
             </li>

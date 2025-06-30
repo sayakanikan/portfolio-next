@@ -1,11 +1,11 @@
 "use client";
 
+import BackButton from "@/app/components/BackButton";
 import Loader from "@/app/components/Loader";
 import ScrollToTopButton from "@/app/components/ScrollOnTopButton";
 import { supabase } from "@/app/lib/supabaseClient";
 import { Project, TechStack } from "@/app/types/types";
 import Image from "next/image";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -67,10 +67,8 @@ const ProjectDetail = () => {
                 )}
               </div>
             </div>
-            <div className="mt-48">
-              <Link href="/" className="bg-none border border-indigo-500 hover:bg-indigo-500 hover:text-white px-3.5 py-1.5 rounded-full">
-                Kembali
-              </Link>
+            <div className="mt-48 w-full grid">
+              <BackButton />
             </div>
           </div>
           <div className="md:col-span-2 px-5">
