@@ -55,7 +55,7 @@ export default function Home() {
 
   const fetchArticles = async () => {
     setIsLoadingArticle(true);
-    const { data, error } = await supabase.from("articles").select("*").order("created_at", { ascending: false });
+    const { data, error } = await supabase.from("articles").select("*").order("created_at", { ascending: false }).limit(4);
     if (!error) setArticle(data);
     setIsLoadingArticle(false);
   };
@@ -103,7 +103,7 @@ export default function Home() {
         container.scrollLeft = 0;
       }
 
-      animationFrame = requestAnimationFrame(scroll); // panggil terus menerus
+      animationFrame = requestAnimationFrame(scroll);
     };
 
     animationFrame = requestAnimationFrame(scroll);
@@ -116,6 +116,10 @@ export default function Home() {
       {/* Blob */}
       <div className="absolute top-[1400px] -left-52 xl:left-52 w-[800px] xl:w-[1000px] h-[800px] xl:h-[1000px] bg-[linear-gradient(to_bottom_right,_#6B21A8,_#EC4899,_#6366F1,_#38BDF8,_#22D3EE)] opacity-30 blur-3xl rounded-full pointer-events-none z-0 animate-[blob-move_10s_infinite]" />
 
+      {/* <div className="absolute top-[3350px] -left-52 xl:-left-96 w-[800px] xl:w-[500px] h-[800px] xl:h-[500px] bg-[linear-gradient(to_bottom_right,_#6B21A5,_#DC4899,_#6366F1,_#38BDF8,_#22D3EE)] opacity-30 blur-3xl rounded-full pointer-events-none z-0 animate-[blob-move_10s_infinite]" />
+
+      <div className="absolute top-[3200px] -right-52 xl:-right-96 w-[800px] xl:w-[500px] h-[800px] xl:h-[500px] bg-[linear-gradient(to_bottom_right,_#6B21A5,_#DC4899,_#6366F1,_#38BDF8,_#22D3EE)] opacity-30 blur-3xl rounded-full pointer-events-none z-0 animate-[blob-move_10s_infinite]" /> */}
+
       {/* Beranda */}
       <section className="mx-auto flex flex-col lg:flex-row items-center justify-between min-h-[calc(100vh-6rem)]">
         <div className="text-center lg:text-left flex flex-col items-center lg:items-start mt-10 lg:mt-0 lg:ms-10 xl:ms-0">
@@ -127,7 +131,7 @@ export default function Home() {
             Saya seorang <span className="text-indigo-500">Software Engineer</span>
           </h2>
 
-          <div className="flex flex-row gap-3">
+          <div className="flex flex-col md:flex-row gap-3">
             <a
               href="https://wa.me/6282137803650"
               target="_blank"
@@ -209,7 +213,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
               {/* Pendidikan */}
               {education ? (
-                <FadeInOnScroll delay={0.3}>
+                <FadeInOnScroll triggerHeight={1300}>
                   <div>
                     <h3 className="text-2xl font-semibold mb-8 text-indigo-600">Pendidikan</h3>
                     <ol className="relative flex flex-col gap-10 border-s border-indigo-500">
@@ -234,7 +238,7 @@ export default function Home() {
 
               {/* PENGALAMAN */}
               {experience ? (
-                <FadeInOnScroll delay={0.5}>
+                <FadeInOnScroll triggerHeight={1350}>
                   <div>
                     <h3 className="text-2xl font-semibold mb-8 text-indigo-600">Pengalaman</h3>
                     <ol className="relative flex flex-col gap-10 border-s border-indigo-500">
@@ -262,21 +266,21 @@ export default function Home() {
       </section>
 
       {/* Project */}
-      {isLoadingProject ? (
-        <Loader />
-      ) : project ? (
-        <FadeInOnScroll>
-          <section className="py-24 px-4 w-full">
-            <div className="max-w-6xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-16 text-center text-slate-900">Featured Project</h2>
 
-              <FadeInOnScroll delay={0.1}>
+      <FadeInOnScroll>
+        <section className="py-24 px-4 w-full">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold mb-16 text-center text-slate-900">Featured Project</h2>
+            {isLoadingProject ? (
+              <Loader />
+            ) : project ? (
+              <FadeInOnScroll triggerHeight={2000}>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {project.map((item, i) => {
                     const spanClass = colSpanMap[item.column_size] ?? "md:col-span-1";
 
                     return (
-                      <FadeInOnScroll key={item.id} delay={i * 0.1}>
+                      <FadeInOnScroll key={item.id} triggerHeight={2000 + i * 20}>
                         <div className={spanClass}>
                           <Link href={`/project/${item.slug}`}>
                             <div className="h-64 relative group overflow-hidden rounded-lg border border-slate-200">
@@ -293,12 +297,12 @@ export default function Home() {
                   })}
                 </div>
               </FadeInOnScroll>
-            </div>
-          </section>
-        </FadeInOnScroll>
-      ) : (
-        <p className="text-center">Tidak ada data projek.</p>
-      )}
+            ) : (
+              <p className="text-center">Tidak ada data projek.</p>
+            )}
+          </div>
+        </section>
+      </FadeInOnScroll>
 
       {/* Tech Stack */}
       <section className="py-24  md:-ms-24 w-screen">
@@ -337,11 +341,11 @@ export default function Home() {
             {isLoadingArticle ? (
               <Loader />
             ) : (
-              <FadeInOnScroll delay={0.1}>
+              <FadeInOnScroll triggerHeight={3500}>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
                   {article && article.length > 0 ? (
                     article.map((item, i) => (
-                      <FadeInOnScroll key={item.id} delay={i * 0.1}>
+                      <FadeInOnScroll key={item.id} triggerHeight={3500 + i * 20}>
                         <div key={item.id} className="bg-white shadow-lg border border-slate-100 rounded-lg group transform transition duration-300 md:scale-105 hover:scale-105 md:hover:scale-110">
                           <Image src={item.image_url} alt="Image Content" className="rounded-t-lg mb-4 w-full h-52 object-cover transition duration-300" width={300} height={300} />
                           <div className="px-5 pb-6">

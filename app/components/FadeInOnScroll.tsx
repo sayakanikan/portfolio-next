@@ -1,12 +1,14 @@
 "use client";
-import { motion } from "framer-motion";
-import { ReactNode } from "react";
+import { motion, useAnimation } from "framer-motion";
+import { ReactNode, useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 
 interface FadeInOnScrollProps {
   children: ReactNode;
   delay?: number;
   duration?: number;
   yOffset?: number;
+  triggerHeight?: number;
 }
 
 export default function FadeInOnScroll({
@@ -14,13 +16,34 @@ export default function FadeInOnScroll({
   delay = 0,
   duration = 0.6,
   yOffset = 30,
+  triggerHeight = 0
 }: FadeInOnScrollProps) {
+  const controls = useAnimation();
+  const { ref, inView } = useInView({ triggerOnce: true });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+
+      if (scrollTop > triggerHeight && inView) {
+        controls.start({ opacity: 1, y: 0 });
+      }
+    };
+
+    if (inView) {
+      window.addEventListener("scroll", handleScroll);
+      handleScroll();
+    }
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [controls, inView, triggerHeight]);
+
   return (
     <motion.div
+      ref={ref}
       initial={{ opacity: 0, y: yOffset }}
-      whileInView={{ opacity: 1, y: 0 }}
+      animate={controls}
       transition={{ delay, duration }}
-      viewport={{ once: true }}
     >
       {children}
     </motion.div>
