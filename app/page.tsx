@@ -4,14 +4,14 @@ import JumbotronImage from "./assets/images/man3.png";
 import Image from "next/image";
 import GithubIcon from "./assets/icons/GithubIcon";
 import LinkedinIcon from "./assets/icons/LinkedinIcon";
-import ScrollCountUp from "./components/ScrollUp";
+import ScrollCountUp from "../components/ScrollUp";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
-import { supabase } from "./lib/supabaseClient";
-import { Article, Experience, Project, TechStack } from "./types/types";
-import ScrollToTopButton from "./components/ScrollOnTopButton";
-import FadeInOnScroll from "./components/FadeInOnScroll";
-import Loader from "./components/Loader";
+import { supabase } from "../lib/supabaseClient";
+import { Article, Experience, Project, TechStack } from "../types/types";
+import ScrollToTopButton from "../components/ScrollOnTopButton";
+import FadeInOnScroll from "../components/FadeInOnScroll";
+import Loader from "../components/Loader";
 
 export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -20,6 +20,8 @@ export default function Home() {
   const [experience, setExperience] = useState<Experience[]>();
   const [article, setArticle] = useState<Article[]>();
   const [techStack, setTechStack] = useState<TechStack[]>();
+  const [resumeUrl, setResumeUrl] = useState<string>();
+  const [waUrl, setWaUrl] = useState<string>();
   const [isVisible, setIsVisible] = useState(true);
   const [isLoadingProject, setIsLoadingProject] = useState<boolean>(false);
   const [isLoadingEducation, setIsLoadingEducation] = useState<boolean>(false);
@@ -34,7 +36,7 @@ export default function Home() {
 
   const fetchProject = async () => {
     setIsLoadingProject(true);
-    const { data, error } = await supabase.from("projects").select("*").order("created_at", { ascending: false });
+    const { data, error } = await supabase.from("projects").select("*").eq("is_featured", true).order("created_at", { ascending: false });
     if (!error) setProject(data);
     setIsLoadingProject(false);
   };
@@ -65,12 +67,25 @@ export default function Home() {
     if (!error) setTechStack(data);
   };
 
+  const fetchResumeUrl = async () => {
+    const { data, error } = await supabase.from("others").select("value").eq("key", "resume_url").single();
+    if (!error) setResumeUrl(data.value);
+  };
+
+  const fetchWaUrl = async () => {
+    const { data, error } = await supabase.from("others").select("value").eq("key", "wa_url").single();
+    console.log(error);
+    if (!error) setWaUrl(data.value);
+  };
+
   useEffect(() => {
     fetchProject();
     fetchExperience();
     fetchArticles();
     fetchEducation();
     fetchTechStack();
+    fetchResumeUrl();
+    fetchWaUrl();
 
     const container = containerRef.current;
     if (!container) return;
@@ -133,16 +148,16 @@ export default function Home() {
 
           <div className="flex flex-col md:flex-row gap-3">
             <a
-              href="https://wa.me/6282137803650"
+              href={waUrl}
               target="_blank"
-              className="w-full sm:w-40 text-center bg-indigo-500 border border-indigo-500 text-white font-medium px-6 py-2.5 rounded-full hover:bg-indigo-500/90 transition-all duration-300 hover:scale-105"
+              className="w-full sm:w-40 text-center bg-indigo-500 border border-indigo-500 text-white font-medium px-6 py-2.5 rounded-full hover:bg-indigo-500/90 transition-all duration-300 hover:scale-105 cursor-pointer"
             >
               Reach Out
             </a>
             <a
-              href="https://dkscluxzlfvwhvgacxql.supabase.co/storage/v1/object/public/portfolio//Irfansyah-resume_compressed.pdf"
+              href={resumeUrl}
               target="_blank"
-              className="w-full sm:w-40 text-center bg-transparent border border-indigo-500 text-black font-medium px-6 py-2.5 rounded-full hover:bg-transparent/5  transition-all duration-300 hover:scale-105"
+              className="w-full sm:w-40 text-center bg-transparent border border-indigo-500 text-black font-medium px-6 py-2.5 rounded-full hover:bg-transparent/5  transition-all duration-300 hover:scale-105 cursor-pointer"
             >
               Lihat Resume
             </a>
@@ -266,7 +281,6 @@ export default function Home() {
       </section>
 
       {/* Project */}
-
       <FadeInOnScroll>
         <section className="py-24 px-4 w-full">
           <div className="max-w-6xl mx-auto">
@@ -280,7 +294,7 @@ export default function Home() {
                     const spanClass = colSpanMap[item.column_size] ?? "md:col-span-1";
 
                     return (
-                      <FadeInOnScroll key={item.id} triggerHeight={2000 + i * 20}>
+                      <FadeInOnScroll key={item.id} triggerHeight={2000 + i * 20} delay={0.1 * i}>
                         <div className={spanClass}>
                           <Link href={`/project/${item.slug}`}>
                             <div className="h-64 relative group overflow-hidden rounded-lg border border-slate-200">
@@ -295,6 +309,11 @@ export default function Home() {
                       </FadeInOnScroll>
                     );
                   })}
+                </div>
+                <div className="grid mt-2 me-3">
+                  <Link href="/projects" className="text-xl font-semibold text-end hover:text-indigo-500">
+                    Lihat semua
+                  </Link>
                 </div>
               </FadeInOnScroll>
             ) : (
@@ -341,11 +360,11 @@ export default function Home() {
             {isLoadingArticle ? (
               <Loader />
             ) : (
-              <FadeInOnScroll triggerHeight={3500}>
+              <FadeInOnScroll triggerHeight={3000}>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
                   {article && article.length > 0 ? (
                     article.map((item, i) => (
-                      <FadeInOnScroll key={item.id} triggerHeight={3500 + i * 20}>
+                      <FadeInOnScroll key={item.id} triggerHeight={3000 + i * 20} delay={0.1 * i}>
                         <div key={item.id} className="bg-white shadow-lg border border-slate-100 rounded-lg group transform transition duration-300 md:scale-105 hover:scale-105 md:hover:scale-110">
                           <Image src={item.image_url} alt="Image Content" className="rounded-t-lg mb-4 w-full h-52 object-cover transition duration-300" width={300} height={300} />
                           <div className="px-5 pb-6">

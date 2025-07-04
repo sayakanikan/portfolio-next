@@ -1,15 +1,15 @@
-import FacebookIcon from "../assets/icons/FacebookIcon";
-import GithubIcon from "../assets/icons/GithubIcon";
-import TwitterIcon from "../assets/icons/TwitterIcon";
-import LinkedinIcon from "../assets/icons/LinkedinIcon";
-import EmailIcon from "../assets/icons/EmailIcon";
-import PhoneIcon from "../assets/icons/PhoneIcon";
-import InstagramIcon from "../assets/icons/InstagramIcon";
+import FacebookIcon from "../app/assets/icons/FacebookIcon";
+import GithubIcon from "../app/assets/icons/GithubIcon";
+import TwitterIcon from "../app/assets/icons/TwitterIcon";
+import LinkedinIcon from "../app/assets/icons/LinkedinIcon";
+import EmailIcon from "../app/assets/icons/EmailIcon";
+import PhoneIcon from "../app/assets/icons/PhoneIcon";
+import InstagramIcon from "../app/assets/icons/InstagramIcon";
 
 export default function Footer() {
   return (
     <footer className="w-full bg-slate-900">
-      <div className="mx-auto w-full max-w-screen-xl py-6 lg:py-10 ">
+      <div className="mx-auto w-full max-w-screen-xl py-6 lg:py-10 lg:mt-10">
         <div className="md:flex md:flex-row">
           <div className="md:flex-1 grid grid-cols-1 mx-4 gap-8 sm:gap-6 sm:grid-cols-3">
             <div className="flex flex-col gap-5">

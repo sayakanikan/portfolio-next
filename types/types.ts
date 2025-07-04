@@ -10,6 +10,7 @@ export type Project = {
   tech_stack_ids: string[];
   column_size: number;
   text_color: string;
+  live_url: string;
 }
 
 export type Experience = {

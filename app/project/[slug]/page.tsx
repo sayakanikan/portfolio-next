@@ -1,10 +1,10 @@
 "use client";
 
-import BackButton from "@/app/components/BackButton";
-import Loader from "@/app/components/Loader";
-import ScrollToTopButton from "@/app/components/ScrollOnTopButton";
-import { supabase } from "@/app/lib/supabaseClient";
-import { Project, TechStack } from "@/app/types/types";
+import BackButton from "@/components/BackButton";
+import Loader from "@/components/Loader";
+import ScrollToTopButton from "@/components/ScrollOnTopButton";
+import { supabase } from "@/lib/supabaseClient";
+import { Project, TechStack } from "@/types/types";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -67,14 +67,22 @@ const ProjectDetail = () => {
                 )}
               </div>
             </div>
-            <div className="mt-48 w-full grid">
+            <div className="mt-40 w-full grid">
               <BackButton />
             </div>
           </div>
           <div className="md:col-span-2 px-5">
             <h3 className="text-4xl font-semibold">Project Overview</h3>
-            <div className="mt-4 prose" dangerouslySetInnerHTML={{ __html: project.description }} ></div>
-            
+            <div className="mt-4 prose" dangerouslySetInnerHTML={{ __html: project.description }}></div>
+
+            {project.live_url ? (
+              <div className="text-lg mt-10">
+                <span className="font-semibold">Live Url: </span>
+                <a href={project.live_url} className="underline text-indigo-500 hover:text-indigo-500/80">
+                  {project.live_url}
+                </a>
+              </div>
+            ) : null}
           </div>
         </div>
       ) : (

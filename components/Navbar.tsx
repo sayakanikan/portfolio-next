@@ -42,19 +42,19 @@ export default function Navbar() {
                 Beranda
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link href="/experiences" className={`transition-all duration-300 block py-2 px-3 text-gray-900 md:hover:text-indigo-500 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 `}>
                 Pengalaman
+              </Link>
+            </li> */}
+            <li>
+              <Link href="/projects" className={`transition-all duration-300 block py-2 px-3 text-gray-900 md:hover:text-indigo-500 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 `}>
+                Projects
               </Link>
             </li>
             <li>
               <Link href="/articles" className={`transition-all duration-300 block py-2 px-3 text-gray-900 md:hover:text-indigo-500 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 `}>
                 Artikel
-              </Link>
-            </li>
-            <li>
-              <Link href="/ai" className={`transition-all duration-300 block py-2 px-3 text-gray-900 md:hover:text-indigo-500 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 `}>
-                Tanya AI
               </Link>
             </li>
           </ul>
