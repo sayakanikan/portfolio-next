@@ -12,9 +12,11 @@ import { Article, Experience, Project, TechStack } from "../types/types";
 import ScrollToTopButton from "../components/ScrollOnTopButton";
 import FadeInOnScroll from "../components/FadeInOnScroll";
 import Loader from "../components/Loader";
+import { colSpanMap } from "@/utils/constants";
 
 export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null);
+
   const [project, setProject] = useState<Project[]>();
   const [education, setEducation] = useState<Experience[]>();
   const [experience, setExperience] = useState<Experience[]>();
@@ -22,83 +24,60 @@ export default function Home() {
   const [techStack, setTechStack] = useState<TechStack[]>();
   const [resumeUrl, setResumeUrl] = useState<string>();
   const [waUrl, setWaUrl] = useState<string>();
+
   const [isVisible, setIsVisible] = useState(true);
-  const [isLoadingProject, setIsLoadingProject] = useState<boolean>(false);
-  const [isLoadingEducation, setIsLoadingEducation] = useState<boolean>(false);
-  const [isLoadingExperience, setIsLoadingExperience] = useState<boolean>(false);
-  const [isLoadingArticle, setIsLoadingArticle] = useState<boolean>(false);
-
-  const colSpanMap: { [key: number]: string } = {
-    1: "md:col-span-1",
-    2: "md:col-span-2",
-    3: "md:col-span-3",
-  };
-
-  const fetchProject = async () => {
-    setIsLoadingProject(true);
-    const { data, error } = await supabase.from("projects").select("*").eq("is_featured", true).order("created_at", { ascending: false });
-    if (!error) setProject(data);
-    setIsLoadingProject(false);
-  };
-
-  const fetchExperience = async () => {
-    setIsLoadingExperience(true);
-    const { data, error } = await supabase.from("experiences").select("*").eq("type", "experience");
-    if (!error) setExperience(data);
-    setIsLoadingExperience(false);
-  };
-
-  const fetchEducation = async () => {
-    setIsLoadingEducation(true);
-    const { data, error } = await supabase.from("experiences").select("*").eq("type", "education");
-    if (!error) setEducation(data);
-    setIsLoadingEducation(false);
-  };
-
-  const fetchArticles = async () => {
-    setIsLoadingArticle(true);
-    const { data, error } = await supabase.from("articles").select("*").order("created_at", { ascending: false }).limit(4);
-    if (!error) setArticle(data);
-    setIsLoadingArticle(false);
-  };
-
-  const fetchTechStack = async () => {
-    const { data, error } = await supabase.from("tech_stacks").select("*").eq("is_show", true).order("sort", { ascending: true });
-    if (!error) setTechStack(data);
-  };
-
-  const fetchResumeUrl = async () => {
-    const { data, error } = await supabase.from("others").select("value").eq("key", "resume_url").single();
-    if (!error) setResumeUrl(data.value);
-  };
-
-  const fetchWaUrl = async () => {
-    const { data, error } = await supabase.from("others").select("value").eq("key", "wa_url").single();
-    console.log(error);
-    if (!error) setWaUrl(data.value);
-  };
+  const [isLoading, setIsLoading] = useState({
+    project: false,
+    education: false,
+    experience: false,
+    article: false,
+  });
 
   useEffect(() => {
-    fetchProject();
-    fetchExperience();
-    fetchArticles();
-    fetchEducation();
-    fetchTechStack();
-    fetchResumeUrl();
-    fetchWaUrl();
+    const fetchData = async () => {
+      setIsLoading((prev) => ({ ...prev, project: true }));
+      const projectRes = await supabase.from("projects").select("*").eq("is_featured", true).order("created_at", { ascending: false });
+      if (!projectRes.error) setProject(projectRes.data);
+      setIsLoading((prev) => ({ ...prev, project: false }));
 
+      setIsLoading((prev) => ({ ...prev, experience: true }));
+      const experienceRes = await supabase.from("experiences").select("*").eq("type", "experience");
+      if (!experienceRes.error) setExperience(experienceRes.data);
+      setIsLoading((prev) => ({ ...prev, experience: false }));
+
+      setIsLoading((prev) => ({ ...prev, education: true }));
+      const educationRes = await supabase.from("experiences").select("*").eq("type", "education");
+      if (!educationRes.error) setEducation(educationRes.data);
+      setIsLoading((prev) => ({ ...prev, education: false }));
+
+      setIsLoading((prev) => ({ ...prev, article: true }));
+      const articleRes = await supabase.from("articles").select("*").order("created_at", { ascending: false }).limit(4);
+      if (!articleRes.error) setArticle(articleRes.data);
+      setIsLoading((prev) => ({ ...prev, article: false }));
+
+      const techRes = await supabase.from("tech_stacks").select("*").eq("is_show", true).order("sort", { ascending: true });
+      if (!techRes.error) setTechStack(techRes.data);
+
+      const resumeRes = await supabase.from("others").select("value").eq("key", "resume_url").single();
+      if (!resumeRes.error) setResumeUrl(resumeRes.data.value);
+
+      const waRes = await supabase.from("others").select("value").eq("key", "wa_url").single();
+      if (!waRes.error) setWaUrl(waRes.data.value);
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    let observer = new IntersectionObserver(
-      (entries) => {
-        setIsVisible(entries[0].isIntersecting);
-      },
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
       { threshold: 0.1 }
     );
 
     observer.observe(container);
-
     return () => observer.disconnect();
   }, []);
 
@@ -106,23 +85,13 @@ export default function Home() {
     const container = containerRef.current;
     if (!container || !isVisible) return;
 
-    let animationFrame: number;
-    const scrollSpeed = 1;
-
     const scroll = () => {
-      if (!container) return;
-
-      container.scrollLeft += scrollSpeed;
-
-      if (container.scrollLeft >= container.scrollWidth / 2) {
-        container.scrollLeft = 0;
-      }
-
-      animationFrame = requestAnimationFrame(scroll);
+      container.scrollLeft += 1;
+      if (container.scrollLeft >= container.scrollWidth / 2) container.scrollLeft = 0;
+      requestAnimationFrame(scroll);
     };
 
-    animationFrame = requestAnimationFrame(scroll);
-
+    const animationFrame = requestAnimationFrame(scroll);
     return () => cancelAnimationFrame(animationFrame);
   }, [isVisible]);
 
@@ -222,7 +191,7 @@ export default function Home() {
             <h2 className="text-3xl md:text-4xl font-bold mb-16 text-center text-slate-900">Pendidikan dan Pengalaman</h2>
           </FadeInOnScroll>
 
-          {isLoadingEducation || isLoadingExperience ? (
+          {isLoading.education || isLoading.experience ? (
             <Loader />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -285,7 +254,7 @@ export default function Home() {
         <section className="py-24 px-4 w-full">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold mb-16 text-center text-slate-900">Featured Project</h2>
-            {isLoadingProject ? (
+            {isLoading.project ? (
               <Loader />
             ) : project ? (
               <FadeInOnScroll triggerHeight={2000}>
@@ -298,7 +267,7 @@ export default function Home() {
                         <div className={spanClass}>
                           <Link href={`/project/${item.slug}`}>
                             <div className="h-64 relative group overflow-hidden rounded-lg border border-slate-200">
-                              <Image src={item.image_url} alt="Gallery" fill className="object-cover transition-transform duration-300 group-hover:scale-105" />
+                              <Image src={item.image_url} sizes="auto" alt="Gallery" fill className="object-cover transition-transform duration-300 group-hover:scale-105" />
                               <div className="absolute inset-0 flex items-end justify-between transition-opacity duration-300 rounded-lg cursor-pointer px-5 pb-4 pointer-events-none">
                                 <p className={`text-sm font-light border rounded-full px-3 py-1 ${item.text_color == "light" ? "text-white border-white" : "text-slate-900 border-slate-900"}`}>{item.type}</p>
                                 <p className={`text-sm font-semibold ${item.text_color == "light" ? "text-white" : "text-slate-900"}`}>{item.project_year}</p>
@@ -357,7 +326,7 @@ export default function Home() {
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold mb-16 text-center text-slate-900">Artikel Terbaru</h2>
 
-            {isLoadingArticle ? (
+            {isLoading.article ? (
               <Loader />
             ) : (
               <FadeInOnScroll triggerHeight={3000}>

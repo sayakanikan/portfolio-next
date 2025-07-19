@@ -39,3 +39,10 @@ export type TechStack = {
   sort: string;
   created_at: Date;
 }
+
+export type Others = {
+  id: number;
+  key: string;
+  value: string;
+  created_at: Date;
+}
